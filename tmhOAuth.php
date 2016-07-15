@@ -56,6 +56,7 @@ class tmhOAuth {
         'curl_http_version'          => CURL_HTTP_VERSION_1_1,
         'curl_connecttimeout'        => 30,
         'curl_timeout'               => 10,
+        'curl_verbose'               => false, //for debug
 
         // for security this should always be set to 2.
         'curl_ssl_verifyhost'        => 2,
@@ -78,7 +79,9 @@ class tmhOAuth {
         'curl_followlocation'        => false, // whether to follow redirects or not
 
         // support for proxy servers
+        'curl_proxytype'             => CURLPROXY_HTTP, // proxy type
         'curl_proxy'                 => false, // really you don't want to use this if you are using streaming
+        'curl_proxyport'             => false, // proxy port
         'curl_proxyuserpwd'          => false, // format username:password for proxy, if required
         'curl_encoding'              => '',    // leave blank for all supported formats, else use gzip, deflate, identity etc
 
@@ -799,13 +802,17 @@ class tmhOAuth {
       CURLOPT_SSL_VERIFYHOST => $this->config['curl_ssl_verifyhost'],
 
       CURLOPT_FOLLOWLOCATION => $this->config['curl_followlocation'],
+      CURLOPT_PROXYTYPE      => $this->config['curl_proxytype'],
       CURLOPT_PROXY          => $this->config['curl_proxy'],
+      CURLOPT_PROXYPORT      => $this->config['curl_proxyport'],
       CURLOPT_ENCODING       => $this->config['curl_encoding'],
       CURLOPT_URL            => $this->request_settings['url'],
       // process the headers
       CURLOPT_HEADERFUNCTION => array($this, 'curlHeader'),
       CURLOPT_HEADER         => false,
       CURLINFO_HEADER_OUT    => true,
+
+      CURLOPT_VERBOSE        => $this->config['curl_verbose'],
     ));
 
     if ($this->config['curl_cainfo'] !== false)
